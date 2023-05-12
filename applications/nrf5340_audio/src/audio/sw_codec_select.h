@@ -25,6 +25,10 @@
 #define LC3_DEC_TIME_US 0
 #endif /* CONFIG_SW_CODEC_LC3 */
 
+#if (CONFIG_SW_CODEC_CUSTOM)
+/* Add CUSTOM codec specific defines here */
+#endif /* CONFIG_SW_CODEC_CUSTOM */
+
 /* Max will be used when multiple codecs are supported */
 #define ENC_MAX_FRAME_SIZE MAX(LC3_ENC_MONO_FRAME_SIZE, 0)
 #define ENC_TIME_US MAX(LC3_ENC_TIME_US, 0)
@@ -35,6 +39,7 @@
 enum sw_codec_select {
 	SW_CODEC_NONE,
 	SW_CODEC_LC3, /* Low Complexity Communication Codec */
+	SW_CODEC_CUSTOM, /* CUSTOM codec */
 };
 
 enum sw_codec_num_ch {

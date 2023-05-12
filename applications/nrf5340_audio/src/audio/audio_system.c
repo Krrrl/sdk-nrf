@@ -47,6 +47,9 @@ static void audio_gateway_configure(void)
 {
 	if (IS_ENABLED(CONFIG_SW_CODEC_LC3)) {
 		sw_codec_cfg.sw_codec = SW_CODEC_LC3;
+	} 
+	else if(IS_ENABLED(CONFIG_SW_CODEC_CUSTOM)) {
+		sw_codec_cfg.sw_codec = SW_CODEC_CUSTOM;
 	} else {
 		ERR_CHK_MSG(-EINVAL, "No codec selected");
 	}
@@ -58,6 +61,9 @@ static void audio_gateway_configure(void)
 
 	if (IS_ENABLED(CONFIG_SW_CODEC_LC3)) {
 		sw_codec_cfg.encoder.bitrate = CONFIG_LC3_BITRATE;
+	}
+	else if(IS_ENABLED(CONFIG_SW_CODEC_CUSTOM)) {
+		sw_codec_cfg.encoder.bitrate = CONFIG_CODEC_CUSTOM_BITRATE;
 	} else {
 		ERR_CHK_MSG(-EINVAL, "No codec selected");
 	}
@@ -75,6 +81,9 @@ static void audio_headset_configure(void)
 {
 	if (IS_ENABLED(CONFIG_SW_CODEC_LC3)) {
 		sw_codec_cfg.sw_codec = SW_CODEC_LC3;
+	} 
+	else if(IS_ENABLED(CONFIG_SW_CODEC_CUSTOM)) {
+		sw_codec_cfg.sw_codec = SW_CODEC_CUSTOM;
 	} else {
 		ERR_CHK_MSG(-EINVAL, "No codec selected");
 	}
@@ -85,6 +94,9 @@ static void audio_headset_configure(void)
 
 	if (IS_ENABLED(CONFIG_SW_CODEC_LC3)) {
 		sw_codec_cfg.encoder.bitrate = CONFIG_LC3_BITRATE;
+	} 
+	else if(IS_ENABLED(CONFIG_SW_CODEC_CUSTOM)) {
+		sw_codec_cfg.encoder.bitrate = CONFIG_CODEC_CUSTOM_BITRATE;
 	} else {
 		ERR_CHK_MSG(-EINVAL, "No codec selected");
 	}

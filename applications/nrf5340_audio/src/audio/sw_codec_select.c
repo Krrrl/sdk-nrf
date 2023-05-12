@@ -15,6 +15,12 @@
 #include "sw_codec_lc3.h"
 #endif /* (CONFIG_SW_CODEC_LC3) */
 
+#if (CONFIG_SW_CODEC_CUSTOM)
+
+/* include CUSTOM codec header files here */
+
+#endif /* (CONFIG_SW_CODEC_CUSTOM) */
+
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(sw_codec_select, CONFIG_SW_CODEC_SELECT_LOG_LEVEL);
 
@@ -92,6 +98,22 @@ int sw_codec_encode(void *pcm_data, size_t pcm_size, uint8_t **encoded_data, siz
 #endif /* (CONFIG_SW_CODEC_LC3) */
 		break;
 	}
+
+	case (SW_CODEC_CUSTOM): {
+
+#if (CONFIG_SW_CODEC_CUSTOM)
+
+		uint16_t encoded_bytes_written;
+
+		/* Add custom codec encoding process */
+
+		*encoded_data = m_encoded_data;
+		*encoded_size = encoded_bytes_written;
+
+#endif /* (CONFIG_SW_CODEC_CUSTOM) */
+		break;
+	}
+
 	default:
 		LOG_ERR("Unsupported codec: %d", m_config.sw_codec);
 		return -ENODEV;
@@ -191,6 +213,18 @@ int sw_codec_decode(uint8_t const *const encoded_data, size_t encoded_size, bool
 #endif /* (CONFIG_SW_CODEC_LC3) */
 		break;
 	}
+	case (SW_CODEC_CUSTOM): {
+
+#if (CONFIG_SW_CODEC_CUSTOM)
+
+		/* Add custom codec decoding process */
+
+		*decoded_size = pcm_size_stereo;
+		*decoded_data = pcm_data_stereo;
+
+#endif /* (CONFIG_SW_CODEC_CUSTOM) */
+		break;
+	}
 	default:
 		LOG_ERR("Unsupported codec: %d", m_config.sw_codec);
 		return -ENODEV;
@@ -234,6 +268,36 @@ int sw_codec_uninit(struct sw_codec_config sw_codec_cfg)
 		}
 #endif /* (CONFIG_SW_CODEC_LC3) */
 		break;
+	case (SW_CODEC_CUSTOM): {
+#if (CONFIG_SW_CODEC_CUSTOM)
+
+		/* uninit encoder */
+		if (sw_codec_cfg.encoder.enabled) {
+			if (!m_config.encoder.enabled) {
+				LOG_ERR("Trying to uninit encoder, it has not been initialized");
+				return -EALREADY;
+			}
+
+			/* Add code to uninit the custom codec encoder here */
+
+			m_config.encoder.enabled = false;
+		}	
+
+		/* uninit decoder */
+		if (sw_codec_cfg.decoder.enabled) {
+			if (!m_config.decoder.enabled) {
+				LOG_WRN("Trying to uninit decoder, it has not been initialized");
+				return -EALREADY;
+			}
+
+			/* Add code to uninit the custom codec decoder here  */
+
+			m_config.decoder.enabled = false;
+		}
+
+#endif /* (CONFIG_SW_CODEC_CUSTOM) */
+		break;
+	}
 	default:
 		LOG_ERR("Unsupported codec: %d", m_config.sw_codec);
 		return false;
@@ -300,6 +364,36 @@ int sw_codec_init(struct sw_codec_config sw_codec_cfg)
 		break;
 #endif /* (CONFIG_SW_CODEC_LC3) */
 		LOG_ERR("LC3 is not compiled in, please open menuconfig and select LC3");
+		return -ENODEV;
+	}
+	case SW_CODEC_CUSTOM: {
+#if (CONFIG_SW_CODEC_CUSTOM)
+
+		/* enable custom codec encoder */
+		if (sw_codec_cfg.encoder.enabled) {
+			if (m_config.encoder.enabled) {
+				LOG_WRN("The LC3 encoder is already initialized");
+				return -EALREADY;
+			}
+
+			/* Add code to initialize custom codec encoder */
+
+		}
+
+		/* enable custom codec decoder */
+		if (sw_codec_cfg.decoder.enabled) {
+			if (m_config.decoder.enabled) {
+				LOG_WRN("The LC3 decoder is already initialized");
+				return -EALREADY;
+			}
+
+			/* Add code to initialize custom codec decoder */
+
+		}	
+
+		break;
+#endif /* (CONFIG_SW_CODEC_CUSTOM) */
+		LOG_ERR("Missing custom codec initialization");
 		return -ENODEV;
 	}
 	default:

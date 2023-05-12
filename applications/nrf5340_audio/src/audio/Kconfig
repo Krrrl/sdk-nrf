@@ -170,6 +170,11 @@ config SW_CODEC_LC3
 	help
 	  LC3 is the mandatory codec for LE Audio.
 
+config SW_CODEC_CUSTOM
+	bool "CUSTOM"
+	help
+	  Switches to the custom codec implementation added in sw_codec_select.c
+
 # Leave room for other codecs
 endchoice
 
@@ -197,6 +202,19 @@ config LC3_BITRATE
 osource "../nrfxlib/lc3/Kconfig"
 
 endmenu # LC3
+
+menu "CODEC_CUSTOM"
+visible if SW_CODEC_CUSTOM
+
+# Add custom codec specific kconfigs here
+
+config CODEC_CUSTOM_BITRATE
+	int
+	default 96000
+	help
+		Bitrate of the custom codec, used in audio_system.c
+
+endmenu # CODEC_CUSTOM
 endmenu # SW Codec
 
 #----------------------------------------------------------------------------#
