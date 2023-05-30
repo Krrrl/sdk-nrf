@@ -40,6 +40,8 @@ extern struct k_thread z_main_thread;
 static atomic_t ble_core_is_ready = (atomic_t) false;
 static struct board_version board_rev;
 
+struct gpio_dt_spec hw_codec_sel = GPIO_DT_SPEC_GET(DT_NODELABEL(hw_codec_sel_out), gpios);
+
 static int hfclock_config_and_start(void)
 {
 	int ret;
@@ -192,6 +194,18 @@ void main(void)
 			ERR_CHK(ret);
 		}
 	}
+
+	/* set P0.21 HIGH so that I2S will be routed to P10 header on the nRF5340 DK, to use an external hardware codec */
+	if (!device_is_ready(hw_codec_sel.port)) 
+	{
+		LOG_ERR("GPIO failed to initialize");
+		return;
+	}
+	ret = gpio_pin_configure_dt(&hw_codec_sel, GPIO_OUTPUT);
+	ERR_CHK(ret);
+
+	ret = gpio_pin_set_dt(&hw_codec_sel, 1);
+	ERR_CHK(ret);
 
 #if defined(CONFIG_AUDIO_DFU_ENABLE)
 	/* Check DFU BTN before Initialize BLE */

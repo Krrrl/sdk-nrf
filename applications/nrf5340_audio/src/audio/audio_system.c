@@ -382,8 +382,11 @@ void audio_system_init(void)
 	ret = audio_datapath_init();
 	ERR_CHK(ret);
 	audio_i2s_init();
-	ret = hw_codec_init();
-	ERR_CHK(ret);
+	
+	/* disable on-board hw codec initialization */
+	//ret = hw_codec_init();	
+	//ERR_CHK(ret);
+	
 #endif
 }
 
